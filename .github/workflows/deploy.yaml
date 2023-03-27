@@ -19,9 +19,10 @@ jobs:
         name: 'Build'
       # Deploy via ssh
       - uses: appleboy/scp-action@master
+        name: 'Copy output to server'
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USER }}
           key: ${{ secrets.KEY }}
           source: './dist/*'
-          target: '~/apps/llama-discord/'
+          target: '~/apps/llama-discord'
