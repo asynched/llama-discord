@@ -1,10 +1,12 @@
+import { logger } from '@/shared/logger'
+
 type MeasureOptions = {
   async?: boolean
 }
 
 export function Measure({ async = false }: MeasureOptions) {
   return function (
-    target: any,
+    _target: any,
     propertyKey: string,
     descriptor: PropertyDescriptor
   ) {
@@ -13,10 +15,16 @@ export function Measure({ async = false }: MeasureOptions) {
     if (async) {
       descriptor.value = async function (...args: any[]) {
         const start = Date.now()
-        const result = originalMethod.apply(this, args)
+        const result = await originalMethod.apply(this, args)
         const end = Date.now()
 
-        console.log(`Method ${propertyKey} took ${end - start}ms`)
+        const total = end - start
+
+        if (total <= 5_000) {
+          logger.info(`Method "${propertyKey}" took ${end - start}ms`)
+        } else {
+          logger.warn(`Method "${propertyKey}" took ${end - start}ms`)
+        }
 
         return result
       }
@@ -26,7 +34,13 @@ export function Measure({ async = false }: MeasureOptions) {
         const result = originalMethod.apply(this, args)
         const end = Date.now()
 
-        console.log(`Method ${propertyKey} took ${end - start}ms`)
+        const total = end - start
+
+        if (total <= 5_000) {
+          logger.info(`Method "${propertyKey}" took ${end - start}ms`)
+        } else {
+          logger.warn(`Method "${propertyKey}" took ${end - start}ms`)
+        }
 
         return result
       }

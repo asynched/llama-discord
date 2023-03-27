@@ -6,7 +6,7 @@ const client = new Client({
   intents: [GatewayIntentBits.Guilds],
 })
 
-client.once('ready', () => logger.info('Bot is ready.'))
+client.once('ready', () => logger.info('Bot is ready'))
 
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isCommand()) {
